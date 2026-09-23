@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:prm393_project/Screens/homepage.dart';
 
+// Exercise 4: global notifier so any screen can toggle Dark Mode.
+final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
+
 void main() {
   // List<int> x=[1,3,5,7,9];
   // List<int> y=[...x,for(var z in x) if(z%2==0) z+1];
@@ -12,9 +15,29 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: true,
-        home: Homepage()
+    // Rebuilds MaterialApp whenever the theme mode changes.
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeNotifier,
+      builder: (context, mode, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: true,
+          // Exercise 4: ThemeData customization (light + dark themes).
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          ),
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue,
+              brightness: Brightness.dark,
+            ),
+          ),
+          // themeMode decides which theme is active (Dark Mode toggle).
+          themeMode: mode,
+          home: Homepage(),
+        );
+      },
     );
   }
 }
